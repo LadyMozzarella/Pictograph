@@ -50,9 +50,11 @@ PictographController.prototype = {
 	populateRecentFeed: function(){
 		var that = this;
 		this.igdata.getRecentFeed().done(function(data) {
-			that.view.updateContent(String(data.data.length));
 			var countedFilters = that.igdata.countFilters(data.data);
+
+			that.view.updateContent(String(data.data.length));
 			that.view.chartFilterCount(that.igdata.separateFilterData(countedFilters), countedFilters);
+			that.populateImages(countedFilters, data.data);
     }).fail(function(){
     	that.view.displayError();
     });
@@ -65,6 +67,19 @@ PictographController.prototype = {
 			this.accessToken = window.location.hash.split('=')[1];
 			this.populateInstagramData();
 		};
+	},
+	populateImages: function(countedFilters, imageFeed) {
+		var popularFilter = this.igdata.getFrequentFilter(countedFilters);
+		var imageIds = this.igdata.getImagesIdsbyFilter(popularFilter, imageFeed);
+		var that = this;
+
+		for(var i=0; i<imageIds.length; i++) {
+				that.igdata.getImageInformation(imageIds[i]).done(function(data) {
+				that.view.appendImage(data.data.images.standard_resolution.url, data.data.user.username);
+			}).fail(function(){
+				that.view.displayError();
+			});
+		}
 	}
 };
 
@@ -93,6 +108,9 @@ PictographView.prototype = {
 	},
 	chartFilterCount: function(filterCountHash, countedFilters) {
 		this.visualization.createBarGraph(filterCountHash.filters, filterCountHash.count, countedFilters)
+	},
+	appendImage: function(url, username) {
+		$('.photos').append('<div class="image"><img src="' + url + '">' + username + '</div>');
 	}
 };
 
@@ -113,6 +131,14 @@ InstagramDataRequest.prototype = {
 			type: 'GET',
 			data: { count: 29 },
 			url: 'https://api.instagram.com/v1/users/self/feed?access_token=' + this.accessToken,
+			dataType: 'jsonp',
+			context: this
+		})
+	},
+	getImageInformation: function(imageId) {
+		return $.ajax({
+			type: 'GET',
+			url: "https://api.instagram.com/v1/media/" + imageId + "?access_token=" + this.accessToken,
 			dataType: 'jsonp',
 			context: this
 		})
@@ -139,6 +165,26 @@ InstagramDataRequest.prototype = {
 			count.push(filterCount[index])
 		}
 		return {filters: filters, count: count};
+	},
+	getFrequentFilter: function(countedFilters) {
+		var count = 0;
+		var filter = "";
+		for( var index in countedFilters ) {
+			if(countedFilters[index] > count) {
+				count = countedFilters[index];
+				filter = index;
+			}
+		}
+		return filter;
+	},
+	getImagesIdsbyFilter: function(filter, imageFeed) {
+		var imageIds = [];
+		for(var i=0; i<imageFeed.length; i++) {
+			if(imageFeed[i].filter == filter){
+				imageIds.push(imageFeed[i].id);
+			}
+		}
+		return imageIds;
 	}
 };
 
@@ -188,7 +234,7 @@ Visualization.prototype = {
 				return d + ':  ' + String(countedFilters[String(d)]);
 			})
 			.attr("y", function(d, i) {
-			  return i * (h / filters.length) + multiplier;  
+			  return (i+1) * (h / filters.length) - multiplier;  
 			})
 			.attr("x", function(d) {
 			  return (countedFilters[d] * multiplier) + multiplier; 

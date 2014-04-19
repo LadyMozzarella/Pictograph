@@ -73,6 +73,8 @@ PictographController.prototype = {
 		var imageIds = this.igdata.getImagesIdsbyFilter(popularFilter, imageFeed);
 		var that = this;
 
+		this.view.addFilterName(popularFilter);
+
 		for(var i=0; i<imageIds.length; i++) {
 				that.igdata.getImageInformation(imageIds[i]).done(function(data) {
 				that.view.appendImage(data.data.images.standard_resolution.url, data.data.user.username);
@@ -111,6 +113,9 @@ PictographView.prototype = {
 	},
 	appendImage: function(url, username) {
 		$('.photos').append('<div class="image"><img src="' + url + '">' + username + '</div>');
+	},
+	addFilterName: function(filter) {
+		$('.photos').prepend('Images with <span class="filter_header">' + filter + '</span> filter:')
 	}
 };
 

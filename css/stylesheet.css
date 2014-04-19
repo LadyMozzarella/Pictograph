@@ -1,4 +1,64 @@
+/*General Specifications*/
+
+h1 {
+	margin: 0;
+	color: #57BE85;
+	text-align: center;
+	border-bottom: thin black solid;
+	margin-bottom: 10px;
+	font-family: 'Droid Serif', serif;
+}
+
+h2 {
+	color: #D87578;
+	text-align: center;
+	border-bottom: thin #7BCED7 solid;
+	margin-bottom: 10px;
+	font-family: 'Droid Serif', serif;
+}
+
+img {
+	width: 100%;
+	border: thin #8F9194 solid;
+}
+
+/*D3.js Graph Specifications*/
+
+.bar_graph {
+	width: 85%;
+	margin: auto;
+}
+
+svg {
+	width: 90%;
+	display: block;
+	margin: auto;
+	border-left: thin black solid;
+}
+
+/*Content Styling Specifications*/
+
 .content {
-	color: white;
-	background-color: black;
+	width: 95%;
+	margin: auto;
+}
+
+.photo {
+	padding: 0 1%;
+	width: 31%;
+	float: left;
+	padding-bottom: 20px;
+	font-family: 'Droid Serif', serif;
+	text-align: center;
+	color: #8F9194;
+}
+
+.btn {
+	width: 100%;
+	font-family: 'Droid Serif', serif;;
+}
+
+.container {
+	margin: auto;
+	width: 90%;
 }

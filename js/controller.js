@@ -1,7 +1,8 @@
-function PictographController() {
+function PictographController(photoTemplate) {
 	this.view = new PictographView;
 	this.bind = new Binder(this);
 	this.igdata = new InstagramDataRequest;
+	this.photoTemplate = photoTemplate;
 };
 
 PictographController.prototype = {
@@ -56,7 +57,7 @@ PictographController.prototype = {
 
 		for(var i=0; i<imageIds.length; i++) {
 				that.igdata.getImageInformation(imageIds[i]).done(function(data) {
-				that.view.appendImage(data.data.images.standard_resolution.url, data.data.user.username);
+				that.view.appendImage(data.data.images.standard_resolution.url, data.data.user.username, that.photoTemplate);
 			}).fail(function(){
 				that.view.displayError();
 			});

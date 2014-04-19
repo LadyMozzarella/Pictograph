@@ -32,14 +32,14 @@ Visualization.prototype = {
 				return d * multiplier;
 			})
 			.attr("height", w / count.length - barPadding)
-			.attr("fill", "red");
+			.attr("fill", "#D87575");
 	},
 	addText: function(filters, multiplier, h, svg, countedFilters) {
 		svg.selectAll("text")
 			.data(filters)
 			.enter()
 			.append("text")
-			.attr("fill", "white")
+			.attr("fill", "black")
 			.text(function(d) {
 				return d + ':  ' + String(countedFilters[String(d)]);
 			})

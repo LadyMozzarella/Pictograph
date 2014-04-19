@@ -3,9 +3,12 @@
   <head>
     <meta charset="utf-8">
     <title>Instagraph</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
     <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-theme.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" src="js/visualization.js"></script>
     <script type="text/javascript" src="js/instagram_data.js"></script>
@@ -13,15 +16,46 @@
     <script type="text/javascript" src="js/controller.js"></script>
     <script type="text/javascript" src="js/binder.js"></script>
     <script type="text/javascript" src="js/application.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style id=​"holderjs-style" type=​"text/​css">​​</style>​
+
   </head>
   <body>
-    <div class="login_btn"><button type="button">Sign in with instagram</button></div>
-  	<div class="content">
-      <div class="bar_graph">
-        <h1><span class="username">Username</span>'s friends' most used filters from the last <span class="count">#</span> updates.</h1>
+    <div class="container theme-showcase">
+      <div class="login_btn">
+        <h1>Sign in with instagram to see which filter is most popular with your friends lately.</h1>
+        <button type="button" class="btn btn-lg btn-success">Sign in with instagram</button>
+      </div>
+    	<div class="content">
+        <div class="row">
+            <div class="bar_graph">
+              <h1><span class="username">Username</span>'s friends' most used filters from the last <span class="count">#</span> updates.</h1>
+            </div>
+        </div>
+        <div class="row">
+          <div class="photo_content">
+            <h2>Images with the most popular filter(<span class="filter_header"></span>):</h2>
+            <div class="photos"></div>
+          </div>
+        </div>
       </div>
 
-      <div class="photos"></div>
+      <div id="photo_template" style="display:none;">
+        <div class="photo">
+          <div class="panel panel-success">
+            <div class="panel-heading">
+              <h3 class="panel-title">by <span class="username_feed">username</span></h3>
+            </div>
+            <div class="panel-body">
+              <img src="#">
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 </html>

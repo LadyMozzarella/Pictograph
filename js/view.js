@@ -8,7 +8,7 @@ PictographView.prototype = {
 		$('.content').hide();
 	},
 	showContent: function() {
-		$('.login_btn').hide();
+		$('.login_btn').remove();
 		$('.content').show();
 	},
 	updateUsername: function(username) {
@@ -24,10 +24,19 @@ PictographView.prototype = {
 	chartFilterCount: function(filterCountHash, countedFilters) {
 		this.visualization.createBarGraph(filterCountHash.filters, filterCountHash.count, countedFilters)
 	},
-	appendImage: function(url, username) {
-		$('.photos').append('<div class="image"><img src="' + url + '">' + username + '</div>');
+	appendImage: function(url, username, photoTemplate) {
+		$('.photos').append(this.compileImage(url, username, photoTemplate));
 	},
 	addFilterName: function(filter) {
-		$('.photos').prepend('Images with <span class="filter_header">' + filter + '</span> filter:')
+		$('.filter_header').text(filter);
+	},
+	compileImage: function(url, username, photoTemplate) {
+		var $photo = $(photoTemplate);
+
+		$photo.find('h3').text(username);
+		$photo.find('img').attr('src', url);
+		$photo.css("display", "inline");
+
+		return $photo;
 	}
 };

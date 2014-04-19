@@ -50,7 +50,8 @@ PictographController.prototype = {
 	populateRecentFeed: function(){
 		var that = this;
 		this.igdata.getRecentFeed().done(function(data) {
-      that.view.updateContent(data.data.length);
+      that.view.updateContent(String(data.data.length));
+      that.view.chartFilterCount(that.igdata.countFilters(data.data));
     }).fail(function(){
     	that.view.displayError();
     });
@@ -81,11 +82,15 @@ PictographView.prototype = {
 		$('.username').text(username);
 	},
 	updateContent: function(postCount) {
-		$('.count').text(String(postCount));
+		$('.count').text(postCount);
 	},
 	displayError: function() {
 		$('.content').html('');
 		$('.content').append('Something went wrong. Sorry!');
+	},
+	chartFilterCount: function(filterCount) {
+		$('.content').append(String(filterCount));
+		debugger;
 	}
 };
 
@@ -109,6 +114,19 @@ InstagramDataRequest.prototype = {
 			dataType: 'jsonp',
 			context: this
 		})
+	},
+	countFilters: function(updates) {
+		var updates = updates;
+		var filterCount = {};
+		for (var i = 0; i < updates.length; i++ ) {
+			if( filterCount[updates[i].filter] == undefined ) {
+				filterCount[updates[i].filter] = 1;
+			}
+			else {
+				filterCount[updates[i].filter] = filterCount[updates[i].filter] + 1 ;
+			}
+		}
+		return filterCount.sort();
 	}
 };
 

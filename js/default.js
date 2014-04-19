@@ -1,5 +1,14 @@
 $(document).ready(function() {
+	var controller = new pictographController();
 
-	//login with instagram button needs to go here:
-	window.open('https://instagram.com/oauth/authorize/?client_id=CLIENT_ID&redirect_uri=https://www.brittanymazza.com/pictograph&response_type=token');
+	event.preventDefault();
+	$("button").bind('click', function(){controller.loginToInstagram()});
 });
+
+function pictographController() {}
+
+pictographController.prototype = {
+	loginToInstagram: function() {
+		window.open('https://instagram.com/oauth/authorize/?client_id=9e8cb302b04d4fd1be775c062799a962&redirect_uri=http://brittanymazza.com/pictograph/&response_type=token', '_self');
+	}
+}

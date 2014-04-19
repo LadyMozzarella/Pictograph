@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	var controller = new PictographController();
-  var accessTokenHash = window.location.hash;
+	var accessTokenHash = window.location.hash;
 	
 	controller.delegateSetup(accessTokenHash);
 });
@@ -50,8 +50,9 @@ PictographController.prototype = {
 	populateRecentFeed: function(){
 		var that = this;
 		this.igdata.getRecentFeed().done(function(data) {
-      that.view.updateContent(String(data.data.length));
-      that.view.chartFilterCount(that.igdata.countFilters(data.data));
+			that.view.updateContent(String(data.data.length));
+			var countedFilters = that.igdata.countFilters(data.data);
+			that.view.chartFilterCount(that.igdata.separateFilterData(countedFilters));
     }).fail(function(){
     	that.view.displayError();
     });
@@ -88,9 +89,49 @@ PictographView.prototype = {
 		$('.content').html('');
 		$('.content').append('Something went wrong. Sorry!');
 	},
-	chartFilterCount: function(filterCount) {
-		$('.content').append(String(filterCount));
-		debugger;
+	chartFilterCount: function(filterCountHash) {
+		var filters = filterCountHash.filters;
+		var count = filterCountHash.count;
+
+		var mulitplier = 19;
+		var w = 500;
+		var h = 26 * mulitplier;
+		var barPadding = 1;
+
+		var svg = d3.select("body")
+		            .append("svg")
+		            .attr("width", w)
+		            .attr("height", h);
+
+    svg.selectAll("rect")
+				.data(count)
+				.enter()
+				.append("rect")
+				.attr("x", function(d, i) {
+					return i * (w / count.length); 
+				})
+				.attr("y", function(d) {
+			    return h - d * mulitplier; 
+				})
+				.attr("width", w / count.length - barPadding)
+				.attr("height", function(d) {
+					return d * mulitplier;
+				})
+				.attr("fill", "red");
+
+		svg.selectAll("text")
+		   .data(count)
+		   .enter()
+		   .append("text")
+		   .text(function(d) {
+        return d;
+		   })
+		   .attr("x", function(d, i) {
+		        return i * (w / count.length) + 1;  
+		   })
+		   .attr("y", function(d) {
+		        return h - (d * mulitplier) - 5; 
+		   });
 	}
 };
 
@@ -126,7 +167,17 @@ InstagramDataRequest.prototype = {
 				filterCount[updates[i].filter] = filterCount[updates[i].filter] + 1 ;
 			}
 		}
-		return filterCount.sort();
+		return filterCount;
+	},
+	separateFilterData: function(filterCount) {
+		var filters = [];
+		var count = [];
+
+		for( var index in filterCount ) {
+			filters.push(index);
+			count.push(filterCount[index])
+		}
+		return {filters: filters, count: count};
 	}
 };
 

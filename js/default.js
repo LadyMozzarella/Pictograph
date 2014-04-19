@@ -35,13 +35,22 @@ PictographController.prototype = {
 	},
 	populateInstagramData: function() {
 		this.populateUserInfo();
+		this.populateRecentFeed();
 		this.view.showContent();
 	},
 	populateUserInfo: function() {
 		var that = this;
 		this.igdata.getUserInfo(this.accessToken).done(function(data) {
-      that.view.fillContent(data.data.username);
+      that.view.updateUsername(data.data.username);
       that.userId = data.data.userId;
+    }).fail(function(){
+    	that.view.displayError();
+    });
+	},
+	populateRecentFeed: function(){
+		var that = this;
+		this.igdata.getRecentFeed().done(function(data) {
+      that.view.updateContent(data.data.length);
     }).fail(function(){
     	that.view.displayError();
     });
@@ -68,8 +77,11 @@ PictographView.prototype = {
 		$('.login_btn').hide();
 		$('.content').show();
 	},
-	fillContent: function(username) {
+	updateUsername: function(username) {
 		$('.username').text(username);
+	},
+	updateContent: function(postCount) {
+		$('.count').text(String(postCount));
 	},
 	displayError: function() {
 		$('.content').html('');
@@ -80,11 +92,20 @@ PictographView.prototype = {
 function InstagramDataRequest() {};
 
 InstagramDataRequest.prototype = {
-	getUserInfo: function (accessToken) {
+	getUserInfo: function(accessToken) {
 		this.accessToken = accessToken;
 		return $.ajax({
 			type: 'GET',
 			url: 'https://api.instagram.com/v1/users/self?access_token=' + this.accessToken,
+			dataType: 'jsonp',
+			context: this
+		})
+	},
+	getRecentFeed: function() {
+		return $.ajax({
+			type: 'GET',
+			data: { count: 29 },
+			url: 'https://api.instagram.com/v1/users/self/feed?access_token=' + this.accessToken,
 			dataType: 'jsonp',
 			context: this
 		})

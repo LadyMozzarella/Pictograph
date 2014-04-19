@@ -1,4 +1,6 @@
 Instagraph
 ==========
 
-Display the amount of instagram photos a user has posted over time on a graph.
+Display a user's friends' recent instagram photos by the most used filter.
+
+To view: [http://brittanymazza.com/pictograph/](http://brittanymazza.com/pictograph/)

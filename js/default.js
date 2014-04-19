@@ -52,7 +52,7 @@ PictographController.prototype = {
 		this.igdata.getRecentFeed().done(function(data) {
 			that.view.updateContent(String(data.data.length));
 			var countedFilters = that.igdata.countFilters(data.data);
-			that.view.chartFilterCount(that.igdata.separateFilterData(countedFilters));
+			that.view.chartFilterCount(that.igdata.separateFilterData(countedFilters), countedFilters);
     }).fail(function(){
     	that.view.displayError();
     });
@@ -68,7 +68,9 @@ PictographController.prototype = {
 	}
 };
 
-function PictographView() {};
+function PictographView() {
+	this.visualization = new Visualization;
+};
 
 PictographView.prototype = {
 	showLoginButton: function() {
@@ -89,49 +91,8 @@ PictographView.prototype = {
 		$('.content').html('');
 		$('.content').append('Something went wrong. Sorry!');
 	},
-	chartFilterCount: function(filterCountHash) {
-		var filters = filterCountHash.filters;
-		var count = filterCountHash.count;
-
-		var mulitplier = 19;
-		var w = 500;
-		var h = 26 * mulitplier;
-		var barPadding = 1;
-
-		var svg = d3.select("body")
-		            .append("svg")
-		            .attr("width", w)
-		            .attr("height", h);
-
-    svg.selectAll("rect")
-				.data(count)
-				.enter()
-				.append("rect")
-				.attr("x", function(d, i) {
-					return i * (w / count.length); 
-				})
-				.attr("y", function(d) {
-			    return h - d * mulitplier; 
-				})
-				.attr("width", w / count.length - barPadding)
-				.attr("height", function(d) {
-					return d * mulitplier;
-				})
-				.attr("fill", "red");
-
-		svg.selectAll("text")
-		   .data(count)
-		   .enter()
-		   .append("text")
-		   .text(function(d) {
-        return d;
-		   })
-		   .attr("x", function(d, i) {
-		        return i * (w / count.length) + 1;  
-		   })
-		   .attr("y", function(d) {
-		        return h - (d * mulitplier) - 5; 
-		   });
+	chartFilterCount: function(filterCountHash, countedFilters) {
+		this.visualization.createBarGraph(filterCountHash.filters, filterCountHash.count, countedFilters)
 	}
 };
 
@@ -180,6 +141,60 @@ InstagramDataRequest.prototype = {
 		return {filters: filters, count: count};
 	}
 };
+
+function Visualization() {};
+
+Visualization.prototype = {
+	createBarGraph: function(filters, count, countedFilters) {
+		var multiplier = 19;
+		var w = 26 * multiplier;
+		var h = 500;
+
+		//Creates bar graph with d3.js library
+		var svg = d3.select(".bar_graph")
+		  .append("svg")
+		  .attr("width", w)
+		  .attr("height", h);
+
+		this.createRectangles(count, multiplier, w, svg);
+		this.addText(filters, multiplier, h, svg, countedFilters);
+	},
+	createRectangles: function(count, multiplier, w, svg) {
+		var barPadding = 1;
+
+		svg.selectAll("rect")
+			.data(count)
+			.enter()
+			.append("rect")
+			.attr("x",  function(d) {
+		    return 0; 
+			})
+			.attr("y", function(d, i) {
+				return i * (w / count.length); 
+			})
+			.attr("width", function(d) {
+				return d * multiplier;
+			})
+			.attr("height", w / count.length - barPadding)
+			.attr("fill", "red");
+	},
+	addText: function(filters, multiplier, h, svg, countedFilters) {
+		svg.selectAll("text")
+			.data(filters)
+			.enter()
+			.append("text")
+			.attr("fill", "white")
+			.text(function(d) {
+				return d + ':  ' + String(countedFilters[String(d)]);
+			})
+			.attr("y", function(d, i) {
+			  return i * (h / filters.length) + multiplier;  
+			})
+			.attr("x", function(d) {
+			  return (countedFilters[d] * multiplier) + multiplier; 
+			});
+	}
+}
 
 
 

@@ -12,7 +12,7 @@ function Binder(controller) {
 Binder.prototype = {
 	instagramLogin: function() {
 		var that = this;
-		$("button").bind('click', function() {
+		$('button').bind('click', function() {
 			event.preventDefault();
 			that.controller.loginToInstagram()
 		});
@@ -20,8 +20,9 @@ Binder.prototype = {
 };
 
 function PictographController() {
-	this.view = new PictographView();
+	this.view = new PictographView;
 	this.bind = new Binder(this);
+	this.igdata = new InstagramDataRequest;
 };
 
 PictographController.prototype = {
@@ -33,7 +34,17 @@ PictographController.prototype = {
 		this.bind.instagramLogin();
 	},
 	populateInstagramData: function() {
+		this.populateUserInfo();
 		this.view.showContent();
+	},
+	populateUserInfo: function() {
+		var that = this;
+		this.igdata.getUserInfo(this.accessToken).done(function(data) {
+      that.view.fillContent(data.data.username);
+      that.userId = data.data.userId;
+    }).fail(function(){
+    	that.view.displayError();
+    });
 	},
 	delegateSetup: function(accessTokenHash) {
 		if (accessTokenHash.length == 0) {
@@ -57,4 +68,32 @@ PictographView.prototype = {
 		$('.login_btn').hide();
 		$('.content').show();
 	},
+	fillContent: function(username) {
+		$('.username').text(username);
+	},
+	displayError: function() {
+		$('.content').html('');
+		$('.content').append('Something went wrong. Sorry!');
+	}
 };
+
+function InstagramDataRequest() {};
+
+InstagramDataRequest.prototype = {
+	getUserInfo: function (accessToken) {
+		this.accessToken = accessToken;
+		return $.ajax({
+			type: 'GET',
+			url: 'https://api.instagram.com/v1/users/self?access_token=' + this.accessToken,
+			dataType: 'jsonp',
+			context: this
+		})
+	}
+};
+
+
+
+
+
+
+

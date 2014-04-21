@@ -5,8 +5,8 @@ function Binder(controller) {
 Binder.prototype = {
 	instagramLogin: function() {
 		var that = this;
-		$('button').bind('click', function() {
-			event.preventDefault();
+		$('button').on('click', function(e) {
+			e.originalEvent.preventDefault();
 			that.controller.loginToInstagram()
 		});
 	}

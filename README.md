@@ -1,4 +1,4 @@
-Instagraph
+Pictograph
 ==========
 
 Display a user's friends' recent instagram photos by the most used filter.

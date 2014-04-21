@@ -33,7 +33,7 @@ PictographController.prototype = {
 			var countedFilters = that.igdata.countFilters(data.data);
 
 			that.view.updateContent(String(data.data.length));
-			that.view.chartFilterCount(that.igdata.separateFilterData(countedFilters), countedFilters);
+			that.view.chartFilterCount(that.igdata.splitSortFilterData(countedFilters), countedFilters);
 			that.populateImages(countedFilters, data.data);
     }).fail(function(){
     	that.view.displayError();

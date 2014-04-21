@@ -40,14 +40,18 @@ InstagramDataRequest.prototype = {
 		}
 		return filterCount;
 	},
-	separateFilterData: function(filterCount) {
+	splitSortFilterData: function(filterCount) {
 		var filters = [];
 		var count = [];
 
 		for( var index in filterCount ) {
 			filters.push(index);
 			count.push(filterCount[index])
-		}
+		};
+
+		filters.sort(function(a,b) { return filterCount[b]-filterCount[a] });
+		count.sort(function(a,b) { return b-a });
+
 		return {filters: filters, count: count};
 	},
 	getFrequentFilter: function(countedFilters) {

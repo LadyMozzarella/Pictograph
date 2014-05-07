@@ -37,7 +37,7 @@ The second display is for all of the pictures that are associated with the filte
 - Bootstrap
 
 ##Contributor
-- ![Brittany Mazza](https://github.com/LadyMozzarella)
+- [Brittany Mazza](https://github.com/LadyMozzarella)
 
 
 
